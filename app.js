@@ -12,7 +12,7 @@ redis.on('connect', function() {
 
 require('./app/routes')(app);
 
-app.get('/', function (req, res) {
+app.get('/', function (_, res) {
     res.send('Hello World!');
 });
 

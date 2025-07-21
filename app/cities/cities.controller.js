@@ -20,8 +20,13 @@ exports.get = function (req, res) {
 
 exports.list = function (req, res) {
     var range = Math.floor(Math.random() * 100) + 1;
-    if (range < 10){
-        throw new Error('How unfortunate! The API Request Failed');
+    var rangeLimite = 10
+    if (range < rangeLimite){
+        return res.status(500).json({
+          error: true,
+          message: `El Rango es menor al limite ${rangeLimite}`,
+          code: 'ERROR_0001'
+        });
     }
     redis.keys('city:*', function (err, cities) {
         getAllCities(cities, function (response) {
