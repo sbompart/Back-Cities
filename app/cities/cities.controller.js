@@ -7,14 +7,30 @@ var https =  require('https');
 
 exports.get = function (req, res) {
     var range = Math.floor(Math.random() * 100) + 1;
-    if (range < 10){
-        throw new Error('How unfortunate! The API Request Failed');
+    var rangeLimite = 10
+    if (range < rangeLimite){
+        return res.status(500).json({
+          error: true,
+          message: `El Rango es menor al limite ${rangeLimite}`,
+          code: 'ERROR_0001'
+        });
     }
     redis.hgetall("city:"+req.params.id, function(err, city) {
-        var reqCity = JSON.parse(city[Object.keys(city)[0]]);
-        getTime(reqCity, function (resp) {
-          res.json(resp);
+      if (err) {
+        return res.status(500).json({
+          error: true,
+          message: `Error al buscar la ciudad ${err}`,
+          code: 'ERROR_0002'
         });
+      }
+      if (city) {
+        var reqCity = JSON.parse(city[Object.keys(city)[0]]);
+        return res.status(200).json(reqCity);
+      }else{
+        return res.status(404).json({
+          message: `La id no existe ${req.params.id}`
+        });
+      }
     });
 };
 
@@ -51,26 +67,4 @@ function getAllCities(cities, callback) {
                 callback (citiesAll);
         });
     });
-}
-
-function getTime(city, callback) {
-  var options = {
-    host: 'api.darksky.net',
-    path: "/forecast/468b06763858d448a298765dd907b9ed/"+city.lat+","+city.lng+"?lang=es"
-  };
-
-  https.get(options, function (resp) {
-    var data = '';
-
-    resp.on('data', function(chunk) {
-      data += chunk;
-    });
-
-    resp.on('end', function() {
-      callback(JSON.parse(data));
-    });
-
-  }).on("error", function(err) {
-    console.log("Error: " + err.message);
-  });
 }
