@@ -44,7 +44,7 @@ node app.js
 ```
 
 ## CRUD funcional
-- [CREATE:] TO BE
-- [READ:] READY
-- [UPDATE:] TO BE
-- [DELETE:] TO BE
+- *CREATE:* TO BE
+- *READ:* READY
+- *UPDATE:* TO BE
+- *DELETE:* TO BE
